@@ -1,4 +1,5 @@
 # Dinitz maximum flow algorithm
+# Level graph built from sink to source for performance
 
 import collections
 
@@ -47,16 +48,16 @@ class Graph:
         assert sink >= 0 and sink < self.vertices_len
         self.level = [self.infinity] * self.vertices_len
         todo = collections.deque()
-        self.level[source] = 0
-        todo.append(source)
+        self.level[sink] = 0
+        todo.append(sink)
         while len(todo) > 0:
             vertex = todo.popleft()
-            if self.level[vertex] >= self.level[sink]:
+            if self.level[vertex] >= self.level[source]:
                 break
             for edge in self.edges[vertex]:
                 if self.level[edge.head] != self.infinity:
                     continue
-                if edge.residual_capacity() == 0:
+                if edge.twin.residual_capacity() == 0:
                     continue
                 self.level[edge.head] = self.level[vertex] + 1
                 todo.append(edge.head)
@@ -71,7 +72,7 @@ class Graph:
             for edge in self.edges[vertex]:
                 if flow == 0:
                     break
-                if self.level[edge.head] != self.level[vertex] + 1:
+                if self.level[edge.head] != self.level[vertex] - 1:
                     continue
                 residual_capacity = edge.residual_capacity()
                 if residual_capacity == 0:
@@ -89,7 +90,7 @@ class Graph:
         max_flow = 0
         while True:
             self.build_level(source, sink)
-            if self.level[sink] == self.infinity:
+            if self.level[source] == self.infinity:
                 return max_flow
             flow = self.infinity
             flow -= self.augment(source, sink, flow)

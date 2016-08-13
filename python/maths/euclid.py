@@ -13,7 +13,13 @@ def extended_gcd(a, b):
     return a, s, t
 
 def mod_inv(a, b):
-    return extended_gcd(a, b)[1] % b
+    bb = b
+    s, ss, = 1, 0
+    while b != 0:
+        q = a // b
+        a, b = b, a % b
+        s, ss = ss, s - q * ss
+    return s % bb
 
 # Basic tests
 

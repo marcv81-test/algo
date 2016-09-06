@@ -32,9 +32,23 @@ assert extended_gcd(105, 252) == (21, 5, -2)
 assert mod_inv(3, 11) == 4
 assert mod_inv(4, 11) == 3
 
-# Modulo inverse demo
+# Fancy n choose k modulo prime demo
 
 modulo = 1000000007
-b = 12345678987654321
-a = b * 98765432123456789
-assert (a // b) % modulo == ((a % modulo) * mod_inv(b, modulo)) % modulo
+limit = 1000
+
+factorial_mod = [1]
+for i in range(1, limit + 1):
+    factorial_mod.append(factorial_mod[i - 1] * i % modulo)
+
+factorial_mod_inv = [mod_inv(1, modulo)]
+for i in range(1, limit + 1):
+    factorial_mod_inv.append(factorial_mod_inv[i - 1] * mod_inv(i, modulo) % modulo)
+
+def nchoosek(n, k):
+    assert k >= 0 and k <= limit
+    assert n >= k and n <= limit
+    return factorial_mod[n] * factorial_mod_inv[k] * factorial_mod_inv[n - k] % modulo
+
+assert nchoosek(10, 5) == 252
+assert nchoosek(1000, 500) == 159835829

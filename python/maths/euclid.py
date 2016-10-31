@@ -3,6 +3,9 @@ def gcd(a, b):
         a, b = b, a % b
     return a
 
+def lcm(a, b):
+    return a * b // gcd(a, b)
+
 # Returns gcd, s, t such that g = s * a + t * b
 def extended_gcd(a, b):
     s, t, ss, tt = 1, 0, 0, 1
@@ -25,6 +28,9 @@ def mod_inv(a, b):
 
 assert gcd(252, 105) == 21
 assert gcd(105, 252) == 21
+
+assert lcm(252, 105) == 1260
+assert lcm(105, 252) == 1260
 
 assert extended_gcd(252, 105) == (21, -2, 5)
 assert extended_gcd(105, 252) == (21, 5, -2)

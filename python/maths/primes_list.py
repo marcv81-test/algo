@@ -9,6 +9,20 @@ def prime_sieve(n):
                 is_prime[j] = False
     return primes
 
+# Sieve of Eratosthenes
+# Modified to use half the memory
+def prime_sieve_2(n):
+    primes = [2]
+    is_prime = [True] * (n >> 1)
+    for i in range(3, n + 1, 2):
+        ii = (i >> 1) - 1
+        if is_prime[ii]:
+            primes.append(i)
+            for j in range(3 * i, n + 1, 2 * i):
+                jj = (j >> 1) - 1
+                is_prime[jj] = False
+    return primes
+
 # Prime factorization, primes only trial division
 # The primes parameter must contains all the primes up to at least sqrt(n)
 # Returns a dict mapping primes to their multiplicity
@@ -88,6 +102,8 @@ def divide(num_factors, den_factors):
 primes = prime_sieve(int(1e5))
 assert primes[0] == 2
 assert primes[-1] == 99991
+
+assert prime_sieve(int(1e6)) == prime_sieve_2(int(1e6))
 
 assert prime_factors(1000000007, primes) == {1000000007: 1}
 assert prime_factors(8974892187, primes) == {3: 2, 9973: 1, 99991: 1}

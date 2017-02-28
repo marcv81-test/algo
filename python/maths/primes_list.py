@@ -110,3 +110,5 @@ assert expand(divide(prime_factors(3528, primes), prime_factors(84, primes))) ==
 
 # 12 / 7 is not an integer
 assert divide(prime_factors(12, primes), prime_factors(7, primes)) == None
+
+print(prime_sieve(100))

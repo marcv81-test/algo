@@ -48,6 +48,24 @@ def build_suffix_array(string):
         span <<= 1
     return suffixes
 
+# Kasai O(n) algorithm
+def build_lcp_array(string, suffix_array):
+    inverse_suffix_array = [-1] * len(suffix_array)
+    for i, suffix in enumerate(suffix_array):
+        inverse_suffix_array[suffix] = i
+    lcp_array = [-1] * len(suffix_array)
+    lcp = 0
+    for i in inverse_suffix_array:
+        if i > 0:
+            i0, i1 = suffix_array[i], suffix_array[i-1]
+            while string[i0+lcp] == string[i1+lcp]:
+                lcp += 1
+            lcp_array[i] = lcp
+            lcp = max(0, lcp - 1)
+        else:
+            lcp = 0
+    return tuple(lcp_array)
+
 
 # Tests
 
@@ -69,17 +87,33 @@ assert keys == ((2, 3), (3, 1), (1, 0))
 def build_suffix_array_naive(string):
     return tuple(sorted(range(len(string)), key=lambda x: string[x:]))
 
+# Naive O(n^2) algorithm for comparison
+def build_lcp_array_naive(string, suffix_array):
+    lcp_array = [-1] * len(suffix_array)
+    for i in range(1, len(suffix_array)):
+        lcp = 0
+        while string[suffix_array[i]+lcp] == string[suffix_array[i-1]+lcp]:
+            lcp += 1
+        lcp_array[i] = lcp
+    return tuple(lcp_array)
+
 words = ['mississippi']
 string = build_string(words)
 suffix_array = build_suffix_array(string)
 assert suffix_array == build_suffix_array_naive(string)
+lcp_array = build_lcp_array(string, suffix_array)
+assert lcp_array == build_lcp_array_naive(string, suffix_array)
 
 words = ['']
 string = build_string(words)
 suffix_array = build_suffix_array(string)
 assert suffix_array == build_suffix_array_naive(string)
+lcp_array = build_lcp_array(string, suffix_array)
+assert lcp_array == build_lcp_array_naive(string, suffix_array)
 
 words = ['apple', 'orange', 'banana', 'mango', 'guava']
 string = build_string(words)
 suffix_array = build_suffix_array(string)
 assert suffix_array == build_suffix_array_naive(string)
+lcp_array = build_lcp_array(string, suffix_array)
+assert lcp_array == build_lcp_array_naive(string, suffix_array)

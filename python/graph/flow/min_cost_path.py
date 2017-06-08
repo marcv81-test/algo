@@ -4,7 +4,8 @@ import heapq
 
 # Finds a minimum-cost path in the residual graph
 # Dijkstra's agorithm
-def dijkstra(graph, source, sink=-1):
+# Uses reduced costs if we provide prices
+def dijkstra(graph, source, sink=-1, price=None):
     assert source >= 0 and source < graph.vertices_count
     assert sink >= -1 and sink < graph.vertices_count
     min_cost = [infinity] * graph.vertices_count
@@ -25,6 +26,8 @@ def dijkstra(graph, source, sink=-1):
             for edge in edges:
                 next_vertex = edge.head
                 next_cost = cost + edge.cost
+                if price is not None:
+                    next_cost += price[edge.tail] - price[edge.head]
                 assert next_cost >= cost
                 if next_cost < min_cost[next_vertex]:
                     min_cost[next_vertex] = next_cost

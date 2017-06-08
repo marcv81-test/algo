@@ -1,3 +1,5 @@
+infinity = int(1e18)
+
 class Edge:
 
     def __init__(self, tail, head, capacity, cost):
@@ -28,3 +30,29 @@ class Graph:
         backward.reverse = forward
         self.edges[tail].append(forward)
         self.edges[head].append(backward)
+
+    def reset_flow(self):
+        for vertex in range(self.vertices_count):
+            for edge in self.edges[vertex]:
+                edge.flow = 0
+
+# Finds the list of edges from source to sink
+# given the parent-link representation of a tree
+def find_path(previous_edge, source, sink):
+    vertex = sink
+    path = []
+    while vertex != source:
+        edge = previous_edge[vertex]
+        path.append(edge)
+        vertex = edge.tail
+    return list(reversed(path))
+
+# Saturates the flow on a path
+# Returns the increase in flow
+def saturate_flow(path):
+    flow = min(edge.capacity - edge.flow for edge in path)
+    if flow == 0:
+        return 0
+    for edge in path:
+        edge.increase_flow(flow)
+    return flow

@@ -48,11 +48,14 @@ def find_path(previous_edge, source, sink):
     return list(reversed(path))
 
 # Saturates the flow on a path
-# Returns the increase in flow
+# Returns the increase in cost and flow
 def saturate_flow(path):
+    cost = 0
     flow = min(edge.capacity - edge.flow for edge in path)
     if flow == 0:
-        return 0
+        return 0, 0
     for edge in path:
+        cost += edge.cost
         edge.increase_flow(flow)
-    return flow
+    cost *= flow
+    return cost, flow

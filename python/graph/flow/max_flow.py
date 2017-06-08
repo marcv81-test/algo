@@ -41,7 +41,8 @@ def edmonds_karp(graph, source, sink):
         if path is None:
             return total_flow
         # Saturate the shortest path
-        total_flow += saturate_flow(path)
+        cost, flow = saturate_flow(path)
+        total_flow += flow
 
 # Assigns a level to each vertex on a shortest path from source to sink
 # in the residual graph
@@ -109,7 +110,8 @@ def dinitz(graph, source, sink):
             if path is None:
                 break
             # Saturate the shortest path
-            total_flow += saturate_flow(path)
+            cost, flow = saturate_flow(path)
+            total_flow += flow
 
 
 if __name__ == "__main__":

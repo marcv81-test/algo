@@ -86,6 +86,20 @@ def lca_query(lca_tree, u, v):
     if i0 > i1: i0, i1 = i1, i0
     return order[rmq_query(etr_rmq, i0, i1)]
 
+# Queries for the path between two vertices
+def find_path(lca_tree, u, v):
+    tree = lca_tree[0]
+    assert u >= 0 and u < tree.vertices_count
+    assert v >= 0 and v < tree.vertices_count
+    def parent_path(u, v):
+        while u != v:
+            yield u
+            u = tree.parent[u]
+    w = lca_query(lca_tree, u, v)
+    path_uw = list(parent_path(u, w))
+    path_wv = list(reversed(list(parent_path(v, w))))
+    return path_uw + [w] + path_wv
+
 ### Tests for correctness ###
 
 g = Graph(6)
@@ -104,9 +118,15 @@ assert lca_query(lca_t, 0, 5) == 0
 assert lca_query(lca_t, 3, 5) == 0
 assert lca_query(lca_t, 3, 4) == 1
 
+assert find_path(lca_t, 3, 4) == [3, 1, 4]
+assert find_path(lca_t, 3, 5) == [3, 1, 0, 2, 5]
+
 # Root the tree at 2
 t = RootedTree.from_graph(g, 2)
 lca_t = lca_build(t)
 
 assert lca_query(lca_t, 3, 4) == 1
 assert lca_query(lca_t, 3, 5) == 2
+
+assert find_path(lca_t, 3, 4) == [3, 1, 4]
+assert find_path(lca_t, 3, 5) == [3, 1, 0, 2, 5]
